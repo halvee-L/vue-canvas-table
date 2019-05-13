@@ -5,7 +5,7 @@ import geometry from "./util/geometry";
 import Emitter from "./util/Emitter";
 const initBrush = () => {
   let canvas = document.createElement("canvas");
-  document.body.appendChild(canvas);
+  // document.body.appendChild(canvas);
   return new Brush(canvas);
 };
 
@@ -15,11 +15,11 @@ export default Vue.extend({
     return {
       tableTag: true,
       children: [],
-      brush: this.$parent.brush || initBrush(),
+      // brush: this.$parent.brush || initBrush(),
       graphical,
       geometry,
-      x: 0,
-      y: 0,
+      x: 0.5,
+      y: 0.5,
       index: -1,
       emitter: this.$parent.emitter || new Emitter(),
       isMouseIn: false
@@ -30,24 +30,39 @@ export default Vue.extend({
     this.mapCanvas && this.mapCanvas();
   },
   methods: {
+    getData() {
+      return {
+        x: this.x,
+        y: this.y,
+        w: this.width,
+        h: this.height,
+        c: this.$children.map(vm => vm.getData())
+      };
+    },
     updateChild() {
       this.children = this.$slots.default;
     },
     render() {
       // this.brush.transform.translate(this.x, this.y);
+      // if (this.$canvas) {
+      //   this.brush = new Brush(this.$canvas);
+      //   // this.update();
+      // }
       this.physics.map(p => p.draw(this.brush));
-      let isClip = !this.$parent.tableTag;
-      if (isClip) {
-        this.brush.save();
-        this.brush.rect.rect(1, 1, this.width - 2, this.height - 2); // todo
-        this.brush.path.clip();
-      }
+      // let isClip = !this.$parent.tableTag;
+      // if (isClip) {
+      // this.brush.save();
+      // this.brush.rect.rect(1, 1, this.width - 2, this.height - 2); // todo
+      // this.brush.path.clip();
+      // }
       this.$children.map(vm => vm && vm.render());
-      if (isClip) {
-        this.brush.restore();
-      }
-      // console.log("render.exce", this);
+      this.afterRendered();
+      // if (isClip) {
+      // this.brush.restore();
+      // }
+      // console.log("render.exce", this.$options.name);
     },
+    afterRendered() {},
     refresh() {},
     renderView() {
       if (this.$parent.tableTag) {
@@ -80,7 +95,7 @@ export default Vue.extend({
       if (this.isPointIn(evt.offsetX, evt.offsetY)) {
         this.$children.map(vm => vm.mousemove(evt));
         if (!this.isMouseIn) {
-          // console.log("mouseent", this);
+          // console.log("vcBase.mouseent.isMouseIn");
           this.isMouseIn = true;
         }
       } else {
@@ -106,6 +121,7 @@ export default Vue.extend({
   // },
   created() {
     this.physics = [];
+    this.brush = this.$parent.brush || initBrush();
     if (this.$parent.tableTag) {
       this.$parent.updateChild();
       this.index = this.$parent.children.indexOf(this.$vnode);

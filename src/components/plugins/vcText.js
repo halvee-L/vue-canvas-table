@@ -18,34 +18,30 @@ export default VCBase.extend({
       //   Size.create(this.width, this.height)
       // );
       // this.pushPhysics(clear);
-      let text = new this.graphical.Text(
+      let str =
         "(" +
-          value +
-          ")  = [" +
-          "[" +
-          this.x +
-          "~" +
-          (this.x + this.width) +
-          "," +
-          this.y +
-          "~" +
-          (this.y + this.height) +
-          "] = " +
-          this.isMouseIn +
-          "",
+        value +
+        ")  = [" +
+        "[" +
+        this.x +
+        "~" +
+        (this.x + this.width) +
+        "," +
+        this.y +
+        "~" +
+        (this.y + this.height) +
+        "] = " +
+        this.isMouseIn +
+        "";
+      str = "(" + value + ") ";
+      let text = new this.graphical.Text(
+        this.$slots.default[0].text,
         Point.create(this.x, this.y),
         Size.create(this.width, this.height)
       );
-      // text.style.setStrokeStyle();
-      text.style.setFillStyle("red");
-      text.setTextAglin("left");
-      text.setBaseLine("top");
+      text.style.setFillStyle("black");
+      text.setTextAglin("center");
       this.pushPhysics(text);
-      // console.log(
-      //   "vctext.refresh-" + this.x + "," + this.y + ":",
-      //   this.isMouseIn,
-      //   this.physics
-      // );
     },
     update() {
       this.refresh();

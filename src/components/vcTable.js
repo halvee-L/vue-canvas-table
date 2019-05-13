@@ -2,6 +2,7 @@ import VCBase from "./vcBase";
 import { table as tableConfig } from "./vcConfig";
 import { parseBoder, serializeBorder } from "./util/parser";
 export default VCBase.extend({
+  // name: "table",
   props: ["width", "height"],
   data() {
     return {
@@ -49,10 +50,10 @@ export default VCBase.extend({
     this.update();
     return node;
   },
-  updated() {},
   methods: {
     refresh() {
       if (!this.context) return;
+      this.clearPhysics();
       let { Point, Size } = this.geometry;
       let style = Object.assign(
         {},
@@ -65,6 +66,7 @@ export default VCBase.extend({
         Size.create(this.width, this.height)
       );
       this.pushPhysics(clearRect);
+
       let fillRect = new this.graphical.FillRect(
         Point.create(this.x, this.y),
         Size.create(this.width, this.height)
@@ -72,7 +74,7 @@ export default VCBase.extend({
 
       fillRect.style.setFillStyle(style.backgroundColor);
 
-      this.pushPhysics(fillRect);
+      // this.pushPhysics(fillRect);
 
       let bts = [
         {
@@ -111,10 +113,21 @@ export default VCBase.extend({
         line.style.setStrokeStyle(boder.color);
         this.pushPhysics(line);
       });
+
+      let clipRect = new this.graphical.ClipRect(
+        Point.create(this.x + 1, this.y + 1),
+        Size.create(this.width - 2, this.height - 2)
+      );
+      this.pushPhysics(clipRect);
     },
     mapCanvas() {
       this.context.putImageData(
-        this.brush.pixel.getImageData(0, 0, this.width * 2, this.height * 2),
+        this.brush.pixel.getImageData(
+          0,
+          0,
+          this.width * this.ratio + 1,
+          this.height * this.ratio + 1
+        ),
         0,
         0
       );
@@ -159,6 +172,8 @@ export default VCBase.extend({
     this.brush.transform.scale(ratio, ratio);
     this.context.scale(2, 2);
     this.initEvent();
+    this.update();
+    this.mapCanvas();
     var mes = (window.mes = document.createElement("div"));
     mes.style.cssText =
       "background-color:black;color:red;width:200px;height:50px; position:fixed;right:0px; top:10px;";

@@ -5,6 +5,7 @@ import StrokeRect from "./StrokeRect";
 import Text from "./Text";
 import Style from "./Style";
 import ClearRect from "./ClearRect";
+import ClipRect from "./ClipRect";
 export default {
   Line,
   PolygonLine,
@@ -12,5 +13,6 @@ export default {
   StrokeRect,
   Text,
   Style,
-  ClearRect
+  ClearRect,
+  ClipRect
 };

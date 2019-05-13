@@ -2,21 +2,21 @@
   <div id="app">
     <vc-table
       :styles="style"
-      :width="800"
+      :width="1000"
       :height="600"
-      style="margin-bottom:20px;margin-left:50px;cursor:pointer;"
+      style="margin-bottom:20px;margin-left:50px;cursor:pointer;margin-top:100px;"
       @cell-enter="cellEnter"
       @cell-out="cellOut"
     >
       <vc-row :key="ri" v-for="(row,ri) in rows">
         <vc-col :key="ci" :data="col.data" :styles="col.style" v-for="(col,ci) in row.cols">
-          <vc-text>{{col.data}}</vc-text>
+          {{col.data}}
+          <!-- <vc-text>{{'单元格'+col.data}}</vc-text> -->
         </vc-col>
       </vc-row>
     </vc-table>
   </div>
 </template>
-
 <script>
 import { vcTable, vcRow, vcCol } from "./components";
 import vcText from "./components/plugins/vcText";
@@ -31,13 +31,16 @@ export default {
   name: "app",
   data() {
     let rows = [];
+    let isPrint = (x, y) => (x > 0) & (y > 0) && y <= x && x <= 9;
     for (var j = 0; j < 30; j++) {
       let cols = [];
       for (var i = 0; i < 20; i++) {
+        let _is = isPrint(j, i);
         cols.push({
-          data: j + "," + i,
+          data: _is ? i + "*" + j + "=" + i * j : "--",
           style: {
-            backgroundColor: createColor(true, i)
+            backgroundColor: createColor(_is, i)
+            // boder: "1px solid red"
           }
         });
       }
@@ -48,21 +51,15 @@ export default {
     }
     return {
       rows: rows,
-      style: {
-        // backgroundColor: "rgba(1, 1, 1, 0.1)",
-        borderTop: "1px solid red",
-        borderRight: "3px solid blue",
-        borderBottom: "1px solid black",
-        borderLeft: "1px solid green"
-      }
+      style: {}
     };
   },
   methods: {
     cellEnter(cell) {
-      cell.styles.backgroundColor = "blue";
+      cell.styles.backgroundColor = "red";
     },
     cellOut(cell) {
-      cell.styles.backgroundColor = createColor(true, 1);
+      cell.styles.backgroundColor = createColor(cell.data != "--", 1);
     }
   },
   components: { vcTable, vcRow, vcCol, vcText }

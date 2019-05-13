@@ -61,5 +61,6 @@ export default class Line extends GBase {
     path.moveTo(this.start.x, this.start.y);
     path.lineTo(this.end.x, this.end.y);
     path.stroke();
+    path.closePath();
   }
 }

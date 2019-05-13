@@ -22,53 +22,45 @@ export default VCBase.extend({
   methods: {
     refresh() {
       let { Point, Size } = this.geometry;
-
-      this.clearPhysics();
-      let clearRect = new this.graphical.ClearRect(
-        Point.create(this.x, this.y),
-        Size.create(this.width, this.height)
-      );
-
-      this.pushPhysics(clearRect);
-      let line = new this.graphical.Line(
-        Point.create(this.x + this.width, 0),
-        Point.create(this.x + this.width, this.y + this.height)
-      );
-      line.style.setStrokeStyle("gray");
-      this.pushPhysics(line);
-
       let style = Object.assign(
         {},
         col.style,
         serializeBorder(this.styles.border),
         this.styles
       );
-      let fillRect = new this.graphical.FillRect(
-        Point.create(this.x, this.y),
-        Size.create(this.width, this.height)
+      this.clearPhysics();
+      let clearRect = new this.graphical.ClearRect(
+        Point.create(this.x - 1, this.y - 1),
+        Size.create(this.width + 1, this.height + 1)
       );
 
-      fillRect.style.setFillStyle(style.backgroundColor);
+      this.pushPhysics(clearRect);
 
-      this.pushPhysics(fillRect);
-      // console.log("ddd", this.isMouseIn, this.isMouseIn + "");
+      let line = new this.graphical.Line(
+        Point.create(this.x + this.width, this.y),
+        Point.create(this.x + this.width, this.y + this.height)
+      );
+      line.style.setStrokeStyle("black");
+      this.pushPhysics(line);
 
+      let x1 = this.x + this.width;
+      let y1 = this.y + this.height;
       let bts = [
         {
           boder: parseBoder(style.borderTop),
-          pos: [this.x, this.y, this.width, this.y]
+          pos: [this.x, this.y, x1, this.y]
         },
         {
           boder: parseBoder(style.borderRight),
-          pos: [this.width, this.y, this.width, this.height]
+          pos: [x1, this.y, x1, y1]
         },
         {
           boder: parseBoder(style.borderBottom),
-          pos: [this.x, this.height, this.width, this.height]
+          pos: [this.x, y1, x1, y1]
         },
         {
           boder: parseBoder(style.borderLeft),
-          pos: [this.x, this.height, this.x, this.y]
+          pos: [this.x, this.y, this.x, y1]
         }
       ];
       bts.map(({ boder, pos }) => {
@@ -89,11 +81,43 @@ export default VCBase.extend({
         line.style.setStrokeStyle(boder.color);
         this.pushPhysics(line);
       });
+
+      let clipRect = new this.graphical.ClipRect(
+        Point.create(this.x, this.y),
+        Size.create(this.width, this.height)
+      );
+      this.pushPhysics(clipRect);
+      let fillRect = new this.graphical.FillRect(
+        Point.create(this.x, this.y),
+        Size.create(this.width, this.height)
+      );
+      fillRect.style.setFillStyle(style.backgroundColor);
+
+      this.pushPhysics(fillRect);
+      if (this.$slots.default[0] && this.$slots.default[0].text) {
+        let text = new this.graphical.Text(
+          this.$slots.default[0].text,
+          Point.create(this.x, this.y),
+          Size.create(this.width, this.height)
+        );
+        text.style.setFillStyle("black");
+        text.setTextAglin("center");
+        this.pushPhysics(text);
+      }
+      // console.log("ddd", this.isMouseIn, this.isMouseIn + "");
+
+      // var t = "";
+      // console.log("cell.update", this.x, this.y, this.physics);
+    },
+    afterRendered() {
+      this.brush.restore();
     }
   },
   watch: {
     isMouseIn(n) {
+      // console.log("watch.isMouseIn");
       this.emitter.emit(n ? "mouse-over" : "mouse-leave", this);
+      // console.log("watch.isMouseIn.end");
     }
   },
   name: "vccol",
