@@ -19,6 +19,7 @@
    >
      <vc-row :key="ri" v-for="(row,ri) in rows">
        <vc-col :key="ci" :data="col.data" :styles="col.style" v-for="(col,ci) in row.cols">
+       {{cell.data}}
          <!-- <vc-text>{{'单元格'+col.data}}</vc-text> -->
        </vc-col>
      </vc-row>
