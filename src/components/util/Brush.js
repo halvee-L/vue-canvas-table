@@ -8,9 +8,12 @@ import Image from "./api/Image";
 import Pixel from "./api/Pixel";
 import Merge from "./api/Merge";
 export default class Brush {
-  constructor(canvas) {
+  constructor(canvas = document.createElement("canvas")) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
+    this._init();
+  }
+  _init() {
     this.style = new Style(this.ctx);
     this.line = new Line(this.ctx);
     this.rect = new Rect(this.ctx);
@@ -20,6 +23,11 @@ export default class Brush {
     this.image = new Image(this.ctx);
     this.pixel = new Pixel(this.ctx);
     this.merge = new Merge(this.ctx);
+  }
+  setCanvas(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext("2d");
+    this._init();
   }
   setSize(width, height) {
     this.canvas.width = width;
@@ -35,7 +43,7 @@ export default class Brush {
     this.ctx.createEvent();
   }
   getContext() {
-    return this.canvas.getContext();
+    return this.canvas.getContext("2d");
   }
   toDataURL() {
     return this.canvas.toDataURL();

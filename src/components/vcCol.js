@@ -28,6 +28,7 @@ export default VCBase.extend({
         serializeBorder(this.styles.border),
         this.styles
       );
+
       this.clearPhysics();
       let clearRect = new this.graphical.ClearRect(
         Point.create(this.x - 1, this.y - 1),
@@ -104,10 +105,6 @@ export default VCBase.extend({
         text.setTextAglin("center");
         this.pushPhysics(text);
       }
-      // console.log("ddd", this.isMouseIn, this.isMouseIn + "");
-
-      // var t = "";
-      // console.log("cell.update", this.x, this.y, this.physics);
     },
     afterRendered() {
       this.brush.restore();
@@ -115,15 +112,9 @@ export default VCBase.extend({
   },
   watch: {
     isMouseIn(n) {
-      // console.log("watch.isMouseIn");
       this.emitter.emit(n ? "mouse-over" : "mouse-leave", this);
-      // console.log("watch.isMouseIn.end");
     }
   },
   name: "vccol",
-  render() {
-    this.update();
-    return this.$slots.default;
-  },
   mounted() {}
 });

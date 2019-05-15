@@ -48,11 +48,5 @@ export default VCBase.extend({
       this.$parent.update();
     }
   },
-  render() {
-    this.update();
-    return this.$slots.default;
-  },
-  created() {
-    // this.update();
-  }
+  created() {}
 });

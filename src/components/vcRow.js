@@ -32,10 +32,5 @@ export default VCBase.extend({
       this.pushPhysics(line);
     }
   },
-  created() {},
-  render(h) {
-    this.update();
-    // return this.$slots.default;
-    return h("s", {}, this.$slots.default);
-  }
+  created() {}
 });

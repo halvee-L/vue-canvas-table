@@ -3,12 +3,11 @@ import Brush from "./util/Brush";
 import graphical from "./util/graphical";
 import geometry from "./util/geometry";
 import Emitter from "./util/Emitter";
-const initBrush = () => {
-  let canvas = document.createElement("canvas");
-  // document.body.appendChild(canvas);
-  return new Brush(canvas);
-};
 
+const isArray = (() =>
+  Array.isArray
+    ? arr => Array.isArray(arr)
+    : arr => Object.prototype.toString.call(arr) === "[object Array]")();
 export default Vue.extend({
   props: ["styles"],
   data() {
@@ -27,7 +26,7 @@ export default Vue.extend({
     };
   },
   updated() {
-    this.mapCanvas && this.mapCanvas();
+    this.update();
   },
   methods: {
     getData() {
@@ -43,24 +42,9 @@ export default Vue.extend({
       this.children = this.$slots.default;
     },
     render() {
-      // this.brush.transform.translate(this.x, this.y);
-      // if (this.$canvas) {
-      //   this.brush = new Brush(this.$canvas);
-      //   // this.update();
-      // }
       this.physics.map(p => p.draw(this.brush));
-      // let isClip = !this.$parent.tableTag;
-      // if (isClip) {
-      // this.brush.save();
-      // this.brush.rect.rect(1, 1, this.width - 2, this.height - 2); // todo
-      // this.brush.path.clip();
-      // }
       this.$children.map(vm => vm && vm.render());
       this.afterRendered();
-      // if (isClip) {
-      // this.brush.restore();
-      // }
-      // console.log("render.exce", this.$options.name);
     },
     afterRendered() {},
     refresh() {},
@@ -78,8 +62,6 @@ export default Vue.extend({
     },
     update() {
       this.refresh();
-      // this.renderView();
-      // this.$nextTick(() => this.renderView());
       this.render();
     },
     pushPhysics(physics) {
@@ -87,9 +69,6 @@ export default Vue.extend({
     },
     clearPhysics() {
       this.physics = [];
-    },
-    mapCanvas() {
-      this.$parent.mapCanvas && this.$parent.mapCanvas();
     },
     mousemove(evt) {
       if (this.isPointIn(evt.offsetX, evt.offsetY)) {
@@ -116,12 +95,10 @@ export default Vue.extend({
       );
     }
   },
-  // mounted() {
-  //   this.index = this.$parent.$children.indexOf(this);
-  // },
+
   created() {
     this.physics = [];
-    this.brush = this.$parent.brush || initBrush();
+    this.brush = this.$parent.brush || new Brush();
     if (this.$parent.tableTag) {
       this.$parent.updateChild();
       this.index = this.$parent.children.indexOf(this.$vnode);
@@ -141,13 +118,14 @@ export default Vue.extend({
       this.index = 0;
     }
   },
-  mounted() {},
-  beforeDestroy() {
-    // let children = this.$parent._physics.children;
-    // for (var i = 0, len = children.length; i < len; i++) {
-    //   if (children[i] === this._physics) {
-    //     children.splice(i, 1);
-    //   }
-    // }
+  render(h) {
+    this.update();
+    let children = this.$slots.default;
+    return h("s", {}, isArray(children) ? children : [children]);
+  },
+  mounted() {
+    if (this.$parent.tableTag) {
+      this.$el.parentElement.removeChild(this.$el);
+    }
   }
 });

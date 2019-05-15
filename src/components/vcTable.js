@@ -29,12 +29,12 @@ export default VCBase.extend({
           "canvas",
           {
             style: {
-              width: this.width + "px",
-              height: this.height + "px"
+              // width: this.width + "px",
+              // height: this.height + "px"
             },
             domProps: {
-              width: this.width * this.ratio,
-              height: this.height * this.ratio
+              // width: this.width * this.ratio,
+              // height: this.height * this.ratio
             },
             on: {
               mousemove(evt) {
@@ -47,7 +47,7 @@ export default VCBase.extend({
         )
       ]
     );
-    this.update();
+    // this.update();
     return node;
   },
   methods: {
@@ -118,19 +118,7 @@ export default VCBase.extend({
         Point.create(this.x + 1, this.y + 1),
         Size.create(this.width - 2, this.height - 2)
       );
-      this.pushPhysics(clipRect);
-    },
-    mapCanvas() {
-      this.context.putImageData(
-        this.brush.pixel.getImageData(
-          0,
-          0,
-          this.width * this.ratio + 1,
-          this.height * this.ratio + 1
-        ),
-        0,
-        0
-      );
+      // this.pushPhysics(clipRect);
     },
     initEvent() {
       this.emitter
@@ -149,31 +137,17 @@ export default VCBase.extend({
   },
   mounted() {
     this.$canvas = this.$el.querySelector("canvas");
-    let context = (this.context = this.$canvas.getContext("2d"));
-    // this.refresh(this.$vnode);
-    var getPixelRatio = function(context) {
-      var backingStore =
-        context.backingStorePixelRatio ||
-        context.webkitBackingStorePixelRatio ||
-        context.mozBackingStorePixelRatio ||
-        context.msBackingStorePixelRatio ||
-        context.oBackingStorePixelRatio ||
-        context.backingStorePixelRatio ||
-        1;
-      return (window.devicePixelRatio || 1) / backingStore;
-    };
-    var ratio = getPixelRatio(context);
-    this.ratio = ratio;
-    let canvas = this.brush.canvas;
-    canvas.style.width = canvas.width + "px";
-    canvas.style.height = canvas.height + "px";
-    canvas.width = canvas.width * ratio;
-    canvas.height = canvas.height * ratio;
-    this.brush.transform.scale(ratio, ratio);
+    this.context = this.$canvas.getContext("2d");
+
+    let canvas = this.$canvas;
+    canvas.style.width = this.width + "px";
+    canvas.style.height = this.height + "px";
+    canvas.width = this.width * 2;
+    canvas.height = this.height * 2;
+    this.brush.setCanvas(this.$canvas);
     this.context.scale(2, 2);
     this.initEvent();
     this.update();
-    this.mapCanvas();
     var mes = (window.mes = document.createElement("div"));
     mes.style.cssText =
       "background-color:black;color:red;width:200px;height:50px; position:fixed;right:0px; top:10px;";
