@@ -6,12 +6,11 @@ export default VCBase.extend({
   props: ["width", "height"],
   data() {
     return {
-      ratio: 1,
       data: {}
     };
   },
   created() {
-    this.brush.setSize(this.width, this.height);
+    // this.brush.setSize(this.width, this.height);
     window.vcTable = this;
   },
   render(h) {
@@ -28,18 +27,27 @@ export default VCBase.extend({
         h(
           "canvas",
           {
-            style: {
-              // width: this.width + "px",
-              // height: this.height + "px"
-            },
-            domProps: {
-              // width: this.width * this.ratio,
-              // height: this.height * this.ratio
-            },
+            style: {},
+            domProps: {},
             on: {
+              mousedown(evt) {
+                vm.mousedown();
+                window.mes.innerText =
+                  "mousedown->x:" + evt.offsetX + "y:" + evt.offsetY;
+              },
               mousemove(evt) {
                 vm.mousemove(evt);
                 window.mes.innerText = "x:" + evt.offsetX + "y:" + evt.offsetY;
+              },
+              mouseup(evt) {
+                vm.mouseup(evt);
+                window.mes.innerText =
+                  "mouseup->x:" + evt.offsetX + "y:" + evt.offsetY;
+              },
+              click(evt) {
+                vm.click(evt);
+                window.mes.innerText =
+                  "click->x:" + evt.offsetX + "y:" + evt.offsetY;
               }
             }
           },
@@ -47,7 +55,6 @@ export default VCBase.extend({
         )
       ]
     );
-    // this.update();
     return node;
   },
   methods: {
@@ -74,7 +81,7 @@ export default VCBase.extend({
 
       fillRect.style.setFillStyle(style.backgroundColor);
 
-      // this.pushPhysics(fillRect);
+      this.pushPhysics(fillRect);
 
       let bts = [
         {
@@ -118,7 +125,7 @@ export default VCBase.extend({
         Point.create(this.x + 1, this.y + 1),
         Size.create(this.width - 2, this.height - 2)
       );
-      // this.pushPhysics(clipRect);
+      this.pushPhysics(clipRect);
     },
     initEvent() {
       this.emitter
@@ -132,13 +139,15 @@ export default VCBase.extend({
         )
         .on("mouse-leave", cell => {
           this.$emit("cell-out", cell);
+        })
+        .on("mouse-click", cell => {
+          this.$emit("cell", cell);
         });
     }
   },
   mounted() {
     this.$canvas = this.$el.querySelector("canvas");
     this.context = this.$canvas.getContext("2d");
-
     let canvas = this.$canvas;
     canvas.style.width = this.width + "px";
     canvas.style.height = this.height + "px";

@@ -11,15 +11,21 @@
       <vc-row :key="ri" v-for="(row,ri) in rows">
         <vc-col :key="ci" :data="col.data" :styles="col.style" v-for="(col,ci) in row.cols">
           {{col.data}}
+          <vc-drag v-if="ri===0&& ci===0"></vc-drag>
           <!-- <vc-text>{{'单元格'+col.data}}</vc-text> -->
         </vc-col>
       </vc-row>
     </vc-table>
+    <!-- <div style="margin-top:20px; border:1px solid red;">
+      <canvas id="jsCanvas"></canvas>
+    </div>-->
   </div>
 </template>
 <script>
 import { vcTable, vcRow, vcCol } from "./components";
 import vcText from "./components/plugins/vcText";
+import vcDrag from "./components/plugins/vcDrag";
+import jsTable from "./components-js/jcTable.js";
 const createColor = (random, i) =>
   random
     ? "#" +
@@ -62,7 +68,23 @@ export default {
       cell.styles.backgroundColor = createColor(cell.data != "--", 1);
     }
   },
-  components: { vcTable, vcRow, vcCol, vcText }
+  mounted() {
+    // let canvas = document.getElementById("jsCanvas");
+    // let jst = new jsTable(canvas, {
+    //   width: 1000,
+    //   height: 600
+    // });
+    // for (let i = 0, len = this.rows.length; i < len; i++) {
+    //   let row = jst.addChildren(28, {});
+    //   let _rd = this.rows[i];
+    //   for (let j = 0, len1 = _rd.cols.length; j < len1; j++) {
+    //     row.addChildren(90, {});
+    //   }
+    // }
+    // jst.update();
+    // window.jst = jst;
+  },
+  components: { vcTable, vcRow, vcCol, vcText, vcDrag }
 };
 </script>
 

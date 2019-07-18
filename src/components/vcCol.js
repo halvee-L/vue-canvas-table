@@ -108,6 +108,9 @@ export default VCBase.extend({
     },
     afterRendered() {
       this.brush.restore();
+    },
+    _click() {
+      console.log("click");
     }
   },
   watch: {
@@ -116,5 +119,7 @@ export default VCBase.extend({
     }
   },
   name: "vccol",
-  mounted() {}
+  mounted() {
+    this.on("mousemove", () => console.log("----hahahhahhah"));
+  }
 });

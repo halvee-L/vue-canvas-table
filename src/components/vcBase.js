@@ -10,6 +10,24 @@ const isArray = (() =>
     : arr => Object.prototype.toString.call(arr) === "[object Array]")();
 export default Vue.extend({
   props: ["styles"],
+  mixins: [
+    {
+      data: () => ({
+        listener: {}
+      }),
+      methods: (() => {
+        let emitter = new Emitter();
+        return {
+          on: function(...args) {
+            emitter.on.apply(this, [...args, this]);
+          },
+          emit: function(...args) {
+            emitter.emit.apply(this, [...args, this]);
+          }
+        };
+      })()
+    }
+  ],
   data() {
     return {
       tableTag: true,
@@ -70,12 +88,15 @@ export default Vue.extend({
     clearPhysics() {
       this.physics = [];
     },
+    mousedown(evt) {},
+    mouseup(evt) {},
     mousemove(evt) {
-      if (this.isPointIn(evt.offsetX, evt.offsetY)) {
+      let [x, y] = [evt.offsetX, evt.offsetY];
+      if (this.isPointIn(x, y)) {
         this.$children.map(vm => vm.mousemove(evt));
         if (!this.isMouseIn) {
-          // console.log("vcBase.mouseent.isMouseIn");
           this.isMouseIn = true;
+          this.emit("mousemove");
         }
       } else {
         this.mouseout(evt);
@@ -84,6 +105,13 @@ export default Vue.extend({
     mouseout(evt) {
       this.isMouseIn = false;
       this.$children.map(vm => vm.mouseout(evt));
+    },
+    click(evt) {
+      let [x, y] = [evt.offsetX, evt.offsetY];
+      if (this.isPointIn(x, y)) {
+        this.$children.map(vm => vm.mousemove(evt));
+        this._click && this._click();
+      }
     },
     mouseenter() {},
     isPointIn(x, y) {

@@ -9,4 +9,7 @@ export default class GBase {
   draw(brush) {
     this.brush(brush);
   }
+  isPointInPath(x, y) {
+    return false;
+  }
 }

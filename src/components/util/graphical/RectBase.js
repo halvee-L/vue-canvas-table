@@ -27,4 +27,10 @@ export default class Rect extends GBase {
   draw(brush) {
     super.draw(brush);
   }
+  isPointInPath(x, y) {
+    this.start.x <= x &&
+      this.start.y <= y &&
+      this.start.x + this.size.width >= x &&
+      this.start.y + this.size.height >= y;
+  }
 }
