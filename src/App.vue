@@ -2,9 +2,9 @@
   <div id="app">
     <vc-table
       :styles="style"
-      :width="1000"
-      :height="600"
-      style="margin-bottom:20px;margin-left:50px;cursor:pointer;margin-top:100px;"
+      :width="1500"
+      :height="900"
+      style="margin-bottom:20px;margin-left:20px;cursor:pointer;margin-top:10px;"
       @cell-enter="cellEnter"
       @cell-out="cellOut"
     >
@@ -42,11 +42,13 @@ export default {
       let cols = [];
       for (var i = 0; i < 20; i++) {
         let _is = isPrint(j, i);
+        //_is ?
         cols.push({
-          data: _is ? i + "*" + j + "=" + i * j : "--",
+          data:  i + "*" + j + "=" + i * j ,//: "--"
           style: {
-            backgroundColor: createColor(_is, i)
+            backgroundColor: createColor(true, i),
             // boder: "1px solid red"
+            color:'blue'
           }
         });
       }
@@ -66,6 +68,7 @@ export default {
     },
     cellOut(cell) {
       cell.styles.backgroundColor = createColor(cell.data != "--", 1);
+      cell.styles.color="white"
     }
   },
   mounted() {
@@ -95,6 +98,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 20px;
 }
 </style>

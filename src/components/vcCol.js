@@ -101,7 +101,7 @@ export default VCBase.extend({
           Point.create(this.x, this.y),
           Size.create(this.width, this.height)
         );
-        text.style.setFillStyle("black");
+        text.style.setFillStyle(style.color || "black");
         text.setTextAglin("center");
         this.pushPhysics(text);
       }

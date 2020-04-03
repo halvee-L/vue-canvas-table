@@ -2,6 +2,9 @@
 
 基于 VUE 组件实现 canvas 表格
 
+演示地址:
+[http://halvee.com/demo/canvastable/index.html]
+
 效果图
 
 ![img](./assets/canvastable.png)
